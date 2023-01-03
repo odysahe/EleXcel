@@ -26,6 +26,11 @@
     "global-agent" "^3.0.0"
     "global-tunnel-ng" "^2.7.1"
 
+"@electron/remote@^2.0.9":
+  "integrity" "sha512-LR0W0ID6WAKHaSs0x5LX9aiG+5pFBNAJL6eQAJfGkCuZPUa6nZz+czZLdlTDETG45CgF/0raSvCtYOYUpr6c+A=="
+  "resolved" "https://registry.npmjs.org/@electron/remote/-/remote-2.0.9.tgz"
+  "version" "2.0.9"
+
 "@electron/universal@1.2.1":
   "integrity" "sha512-7323HyMh7KBAl/nPDppdLsC87G6RwRU02dy5FPeGB1eS7rUePh55+WNWiDPLhFQqqVPHzh77M69uhmoT8XnwMQ=="
   "resolved" "https://registry.npmjs.org/@electron/universal/-/universal-1.2.1.tgz"
@@ -786,7 +791,7 @@
     "lazy-val" "^1.0.5"
     "mime" "^2.5.2"
 
-"electron@^21.2.3":
+"electron@^21.2.3", "electron@>= 13.0.0":
   "integrity" "sha512-Wyj0ri3P8hnWEvX7+2Q1OtNzJI8Qn4V9J+aeypoXh+wtlX/fjfHxi4vZkos/XRncoIeYCeUZ5nhGjsOIQwSElQ=="
   "resolved" "https://registry.npmjs.org/electron/-/electron-21.2.3.tgz"
   "version" "21.2.3"

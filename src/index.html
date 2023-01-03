@@ -10,7 +10,7 @@
 </head>
 <body>
     <h1>Hello world</h1>
-    <form action="http://localhost:3000/" method="post" enctype="multipart/form-data" id="myform">
+    <form action="" method="post" enctype="multipart/form-data" id="myform">
         <!-- <input type="text" name="address_pt" id="" required>
         <input type="date" name="exp_date" required>
         <input type="date" name="created_at" id="" required> -->
@@ -19,24 +19,6 @@
     </form>
     <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
 
-    <script>
-        
-        var input = document.getElementById('file_skrd')
-        input.addEventListener('change', function() {
-            readXlsxFile(input.files[0], { sheet:1 }).then((rows) => {
-                rows.forEach((e, i) => {
-                    if (e[0] && !Number.isInteger(e[0])) {
-                        if (e[0].substr(0, 4) == 'PT. ') {
-                            console.log(e[0])
-                        }
-                    }
-                    if (Number.isInteger(e[0])) {
-                        console.log(e[3]);
-                    }         
-                });
-            })
-        })
-    </script>
     <!-- <a href="http://localhost:3000/oho">klik</a> -->
     <!-- <p>
         We are using Node.js <span id="node-version"></span>,
@@ -44,17 +26,84 @@
         and Electron <span id="electron-version"></span>.
     </p> -->
     <!-- <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
     <script>
-        const electron = require('electron');
-        const ipcRenderer = electron.ipcRenderer;
-        document.getElementById('myform').addEventListener("submit", function(e){
+        const { app, BrowserWindow } = require('@electron/remote');
+        const path = require('path');
+        const fs = require('fs');
+
+        function mywind(examp){
+            const win = new BrowserWindow({
+                show: false,
+                webPreferences: {
+                    nodeIntegration:true,
+                    contextIsolation: false,
+                }
+            })
+
+            win.webContents.openDevTools();
+        
+            win.loadFile(path.join(__dirname, 'skrd.html'));
+
+            win.webContents.send('data', examp);
+
+            win.webContents.on('did-finish-load', () => {
+                win.webContents.printToPDF({
+                    // marginsType: 1,
+                    //paper F4
+                    pageSize: {
+                        height: 13,//inch
+                        width: 8.5,//inch
+                    },
+                    printBackground: true,
+                    printSelectionOnly: false,
+                    landscape: false
+                }).then(data => {
+                    fs.writeFile(app.getPath('downloads')+"/"+examp.namefile+".pdf", data, function (err) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log('PDF Generated Successfully');
+                        }
+                    });
+                }).catch(error => {
+                    console.log(error)
+                });
+            });
+        }
+
+        let input = document.getElementById('file_skrd')
+        let myform = document.getElementById('myform')
+        myform.addEventListener('submit', function(e) {
             e.preventDefault();
-            // let form = document.getElementById('myform');
-            // let data = new FormData(this);
-            this.submit();
-        },true)
+            try {
+                for (let i = 1; i < 9; i++) {
+                    readXlsxFile(input.files[0], { sheet:i }).then((rows) => {
+                        let obj = new Object();
+
+                        obj.tahun = 2023;
+                        obj.data = rows;
+
+                        rows.forEach((e, i) => {
+                            if (e[0] && !Number.isInteger(e[0])) {
+                                if (e[0].substr(0, 4) == 'PT. ') {
+                                    obj.namefile=e[0];
+                                    // return false;
+                                }
+                            }    
+                            // if (Number.isInteger(e[0])) {
+                            //     // console.log(e[7].split(""));
+                            //     // return false;
+                            // }       
+                        });
+                        mywind(obj);
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+            }           
+        })
     </script>
-    <script>if (window.module) module = window.module;</script> -->
+    <!-- <script>if (window.module) module = window.module;</script> -->
 </body>
 </html>

@@ -1,31 +1,28 @@
-const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron')
+const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const url = require('url')
+require('@electron/remote/main').initialize()
 
 function createWindow () {
-  let server = require('./server')
+  // let server = require('./server')
   const win = new BrowserWindow({
     width: 1200,
     height: 720,
     webPreferences: {
-        enableRemoteModule:true,
-        nodeIntegration:true,
-        contextIsolation: false,
-        preload: path.join(__dirname, 'preload.js')
+      nodeIntegration:true,
+      enableRemoteModule:true,
+      contextIsolation: false,
+      preload: path.join(__dirname, 'preload.js')
     }
   })
 
+  require('@electron/remote/main').enable(win.webContents)
   win.webContents.openDevTools()
 
   win.loadFile(path.join(__dirname, 'index.html'))
-  win.loadURL('http://localhost:3000')
+  // win.loadURL('http://localhost:3000')
 
-  // console.log(__dirname);
 }
-
-// ipcMain.handle('to-data',(av, arg)=>{
-//     console.log(arg);
-// })
 
 
 app.whenReady().then(() => {
