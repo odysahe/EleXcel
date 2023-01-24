@@ -8,29 +8,56 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
     <title>EleXcel</title>
 </head>
-<body>
-    <h1>Hello world</h1>
-    <form action="" method="post" enctype="multipart/form-data" id="myform">
-        <!-- <input type="text" name="address_pt" id="" required>
-        <input type="date" name="exp_date" required>
-        <input type="date" name="created_at" id="" required> -->
-        <input type="file" name="file_skrd" id="file_skrd" required>
-        <input type="submit" value="Proses">
-    </form>
+<body style="height: 100vh;">
+    <div class="container h-100">
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <div class="card mt-5">
+                    <div class="card-body">
+                        <form action="" method="post" enctype="multipart/form-data" id="myform">
+                            <div class="mb-2">
+                                <label for="address_pt" class="form-label">Alamat PT.</label>
+                                <input class="form-control" type="text" name="address_pt" id="address_pt" placeholder="Alamat PT" required>
+                            </div>
+                            <div class="mb-2">
+                                <label for="exp_date" class="form-label">Tanggal Jatuh Tempo</label>
+                                <input class="form-control" type="date" name="exp_date" id="exp_date" placeholder="Tanggal Jatuh Tempo" required>
+                            </div>
+                            <div class="mb-2">
+                                <label for="created_at" class="form-label">Tanggal Dibuat</label>
+                                <input class="form-control" type="date" name="created_at" id="created_at" placeholder="Tanggal Dibuat" required>
+                            </div>
+                            <div class="mb-2">
+                                <label for="file_skrd" class="form-label">File SKRD</label>
+                                <input class="form-control" type="file" name="file_skrd" id="file_skrd" placeholder="File SKRD" required>
+                            </div>
+                            <input class="btn btn-primary btn-block" type="submit" value="Proses">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
     <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
-
-    <!-- <a href="http://localhost:3000/oho">klik</a> -->
-    <!-- <p>
-        We are using Node.js <span id="node-version"></span>,
-        Chromium <span id="chrome-version"></span>,
-        and Electron <span id="electron-version"></span>.
-    </p> -->
-    <!-- <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
     <script>
         const { app, BrowserWindow } = require('@electron/remote');
         const path = require('path');
         const fs = require('fs');
+        function ConvTgl(params) {
+            let refmont = ['Januari','Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            let date = new Date(params);
+            let day = null;
+            if (date.getDate() < 10) {
+                day = "0"+date.getDate()
+            }else{
+                day = date.getDate()
+            }
+
+            return day +" "+refmont[date.getMonth()]+" "+date.getFullYear();
+
+        }
 
         function mywind(examp){
             const win = new BrowserWindow({
@@ -64,6 +91,7 @@
                             console.log(err);
                         } else {
                             console.log('PDF Generated Successfully');
+                            alert('PDF Generated Successfully');
                         }
                     });
                 }).catch(error => {
@@ -75,35 +103,30 @@
         let input = document.getElementById('file_skrd')
         let myform = document.getElementById('myform')
         myform.addEventListener('submit', function(e) {
-            e.preventDefault();
+            e.preventDefault(); 
             try {
-                for (let i = 1; i < 9; i++) {
-                    readXlsxFile(input.files[0], { sheet:i }).then((rows) => {
-                        let obj = new Object();
+                readXlsxFile(input.files[0], { sheet:5 }).then((rows) => {
+                    let obj = new Object();
 
-                        obj.tahun = 2023;
-                        obj.data = rows;
+                    obj.tahun = 2023;
+                    obj.data = rows;
+                    obj.exp_date = ConvTgl(myform.elements['exp_date'].value);
+                    obj.created_at = ConvTgl(myform.elements['created_at'].value);
+                    obj.address_pt = myform.elements['address_pt'].value;
 
-                        rows.forEach((e, i) => {
-                            if (e[0] && !Number.isInteger(e[0])) {
-                                if (e[0].substr(0, 4) == 'PT. ') {
-                                    obj.namefile=e[0];
-                                    // return false;
-                                }
-                            }    
-                            // if (Number.isInteger(e[0])) {
-                            //     // console.log(e[7].split(""));
-                            //     // return false;
-                            // }       
-                        });
-                        mywind(obj);
+                    rows.forEach((e, i) => {
+                        if (e[0] && !Number.isInteger(e[0])) {
+                            if (e[0].substr(0, 4) == 'PT. ') {
+                                obj.namefile=e[0];
+                            }
+                        }      
                     });
-                }
+                    mywind(obj);
+                });
             } catch (error) {
                 console.log(error);
             }           
         })
     </script>
-    <!-- <script>if (window.module) module = window.module;</script> -->
 </body>
 </html>

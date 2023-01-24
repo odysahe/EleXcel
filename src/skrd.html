@@ -317,8 +317,7 @@
             }
             return full.join(' ');
         }
-        // test
-        console.log(terbilang(parseInt(445875019772727)) + " Rupiah");
+        
         function convertRp(isi) {
             return isi.toString().replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1.")
         };
@@ -327,7 +326,8 @@
             data.data.forEach((e, i) => {   
                 if (Number.isInteger(e[0])) {
                     let breaks='', urut='';
-                    e[7].split("").forEach((i, j) => {
+                    // console.log(e);
+                    e[7].toString().split("").forEach((i, j) => {
                         urut+='<div style="border: 1px solid black; width: 25px;">'+i+'</div>';
                     })
                     
@@ -368,7 +368,7 @@
                             '<tr>'+
                                 '<td style="width: 25%; border: none; padding-left: 12px;padding-top: 12px;">ALAMAT</td>'+
                                 '<td style="width: 2%; border: none;padding-top: 12px;">:</td>'+
-                                '<td colspan="3" style=" border: none;padding-top: 12px;"> Jl. Letjen MT Haryono Kav 25 Graha Pratama Lt 9, Tebet Barat, Jakarta Selatan</td>'+
+                                '<td colspan="3" style=" border: none;padding-top: 12px;"> '+ data.address_pt  +
                             '</tr>'+
                             '<tr>'+
                                 '<td style="width: 25%; border: none; padding-left: 12px;padding-top: 12px;">NO. POKOK WAJIB PAJAK</td>'+
@@ -378,7 +378,7 @@
                             '<tr>'+
                                 '<td style="width: 25%; border: none; padding-left: 12px;padding-top: 12px;padding-bottom: 12px;">TANGGAL JATUH TEMPO</td>'+
                                 '<td style="width: 2%; border: none; padding-top: 12px;padding-bottom: 12px;">:</td>'+
-                                '<td colspan="3" style=" border: none;padding-top: 12px;padding-bottom: 12px;">20 Desember 2023</td>'+
+                                '<td colspan="3" style=" border: none;padding-top: 12px;padding-bottom: 12px;">'+data.exp_date+'</td>'+
                             '</tr>'+
                         '</tbody>'+
                     '</table>'+
@@ -469,7 +469,7 @@
                             '<tr>'+
                                 '<td style="width: 50%;border-right: none;"></td>'+
                                 '<td style="text-align: center;border-left: none;padding-bottom: 12px;">'+
-                                    '<p>Pamekasan, &nbsp;&nbsp;&nbsp;   Agustus 2022</p>'+
+                                    '<p>Pamekasan, '+data.created_at+'</p>'+
                                     'KEPALA DINAS KOMUNIKASI DAN INFORMATIKA <br> KABUPATEN PAMEKASAN <br><br><br><br><br><br><br>'+
                                     '<strong style="text-decoration: underline;">Ir. MOHAMMAD, MM</strong><br>'+
                                     'Pembina Utama Muda <br>'+
