@@ -13,11 +13,12 @@ function createWindow () {
       enableRemoteModule:true,
       contextIsolation: false,
       preload: path.join(__dirname, 'preload.js')
-    }
+    },
   })
 
   require('@electron/remote/main').enable(win.webContents)
   win.webContents.openDevTools()
+  win.removeMenu()
 
   win.loadFile(path.join(__dirname, 'index.html'))
   // win.loadURL('http://localhost:3000')

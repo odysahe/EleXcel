@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <title>EleXcel</title>
 </head>
 <body style="height: 100vh;">
@@ -15,11 +15,12 @@
             <div class="col-sm-8">
                 <div class="card mt-5">
                     <div class="card-body">
+                        <h3 style="text-align: center;">SKRD Generator</h3>
                         <form action="" method="post" enctype="multipart/form-data" id="myform">
-                            <div class="mb-2">
+                            <!-- <div class="mb-2">
                                 <label for="address_pt" class="form-label">Alamat PT.</label>
                                 <input class="form-control" type="text" name="address_pt" id="address_pt" placeholder="Alamat PT" required>
-                            </div>
+                            </div> -->
                             <div class="mb-2">
                                 <label for="exp_date" class="form-label">Tanggal Jatuh Tempo</label>
                                 <input class="form-control" type="date" name="exp_date" id="exp_date" placeholder="Tanggal Jatuh Tempo" required>
@@ -32,7 +33,14 @@
                                 <label for="file_skrd" class="form-label">File SKRD</label>
                                 <input class="form-control" type="file" name="file_skrd" id="file_skrd" placeholder="File SKRD" required>
                             </div>
-                            <input class="btn btn-primary btn-block" type="submit" value="Proses">
+                            <div class="mb-3">
+                                <label for="NomorSheet" class="form-label">Nomor Sheet</label>
+                                <input class="form-control" type="text" name="NomorSheet" id="NomorSheet" placeholder="Nomor Sheet" required>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <input class="btn btn-primary btn-block" type="submit" value="Proses">
+                                <input class="btn btn-warning btn-block" onclick="location.reload()" type="button" value="Reload">
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -40,7 +48,7 @@
             <div class="col-sm-2"></div>
         </div>
     </div>
-    <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
+    <script src="js/read-excel-file.min.js"></script>
     <script>
         const { app, BrowserWindow } = require('@electron/remote');
         const path = require('path');
@@ -59,7 +67,7 @@
 
         }
 
-        function mywind(examp){
+        function mywind(examp, idx){
             const win = new BrowserWindow({
                 show: false,
                 webPreferences: {
@@ -70,7 +78,11 @@
 
             win.webContents.openDevTools();
         
-            win.loadFile(path.join(__dirname, 'skrd.html'));
+            if (idx < 2) {
+                win.loadFile(path.join(__dirname, 'inskrd.html'));
+            }else{
+                win.loadFile(path.join(__dirname, 'skrd.html'));
+            }
 
             win.webContents.send('data', examp);
 
@@ -86,12 +98,11 @@
                     printSelectionOnly: false,
                     landscape: false
                 }).then(data => {
-                    fs.writeFile(app.getPath('downloads')+"/"+examp.namefile+".pdf", data, function (err) {
+                    fs.writeFile(app.getPath('downloads')+"/"+idx+"_"+examp.namefile+".pdf", data, function (err) {
                         if (err) {
                             console.log(err);
                         } else {
-                            console.log('PDF Generated Successfully');
-                            alert('PDF Generated Successfully');
+                            alert('File Tersimpan di Downloads/'+idx+'_'+examp.namefile+".pdf");
                         }
                     });
                 }).catch(error => {
@@ -104,27 +115,33 @@
         let myform = document.getElementById('myform')
         myform.addEventListener('submit', function(e) {
             e.preventDefault(); 
+            console.log(myform.elements['NomorSheet'].value);
             try {
-                readXlsxFile(input.files[0], { sheet:5 }).then((rows) => {
+                readXlsxFile(input.files[0], { sheet:parseInt(myform.elements['NomorSheet'].value) }).then((rows, error) => {
                     let obj = new Object();
 
                     obj.tahun = 2023;
                     obj.data = rows;
                     obj.exp_date = ConvTgl(myform.elements['exp_date'].value);
                     obj.created_at = ConvTgl(myform.elements['created_at'].value);
-                    obj.address_pt = myform.elements['address_pt'].value;
+                    // obj.address_pt = myform.elements['address_pt'].value;
 
                     rows.forEach((e, i) => {
                         if (e[0] && !Number.isInteger(e[0])) {
                             if (e[0].substr(0, 4) == 'PT. ') {
                                 obj.namefile=e[0];
                             }
-                        }      
+                        }
+                        if ( i == 2 ) {
+                            obj.address_pt=e[0];
+                        }
                     });
-                    mywind(obj);
+                    console.log(obj);
+                    mywind(obj, 1);
+                    mywind(obj, 2);
                 });
             } catch (error) {
-                console.log(error);
+                alert(error);
             }           
         })
     </script>
