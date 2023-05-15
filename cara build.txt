@@ -1,0 +1,3 @@
+install wine32
+yarn install
+run "yarn build -w" -> untuk windows
