@@ -18,18 +18,24 @@
     "@electron/remote": "^2.0.9",
     "body-parser": "^1.20.1",
     "ejs": "^3.1.8",
+    "electron-updater": "^5.3.0",
     "express": "^4.18.2",
     "multer": "^1.4.5-lts.1",
     "read-excel-file": "^5.5.3",
     "xlsx": "^0.18.5"
   },
+  "repository": "https://github.com/odysahe/EleXcel",
+  "publish": {
+    "provider": "github",
+    "releaseType": "release"
+  },
   "build": {
     "appId": "com.elexcel.app",
-    "asar":true,
-    "win":{
+    "asar": true,
+    "win": {
       "target": "nsis"
     },
-    "nsis":{
+    "nsis": {
       "oneClick": false
     }
   }
