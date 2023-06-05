@@ -153,9 +153,11 @@
                 win.loadFile(path.join(__dirname, 'skrd.html'));
             }
 
-            win.webContents.send('data', examp);
+            // win.webContents.send('data', examp);
 
             win.webContents.on('did-finish-load', () => {
+                win.webContents.send('data', examp);
+                
                 win.webContents.printToPDF({
                     // marginsType: 1,
                     //paper F4
