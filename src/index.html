@@ -25,7 +25,7 @@
     <title>EleXcel</title>
 </head>
 
-<body style="height: 100vh;">
+<body style="height: 100vh;" data-bs-theme="light">
     <div class="container h-100">
         <div class="row">
             <div class="col-sm-2"></div>
@@ -79,6 +79,7 @@
             Restart
         </button>
     </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/read-excel-file.min.js"></script>
     <script>
         const { app, BrowserWindow } = require('@electron/remote');
@@ -87,6 +88,12 @@
         const notification = document.getElementById('notification');
         const message = document.getElementById('message');
         const restartButton = document.getElementById('restart-button');
+
+        if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+            console.log('dark');
+        } else {
+            console.log('light');
+        }
 
         function closeNotification() {
             notification.classList.add('hidden');
@@ -145,7 +152,9 @@
                 }
             })
 
-            win.webContents.openDevTools();
+            // win.webContents.openDevTools();
+            win.maximize(true)
+            win.removeMenu()
 
             if (idx < 2) {
                 win.loadFile(path.join(__dirname, 'inskrd.html'));
