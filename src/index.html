@@ -153,8 +153,8 @@
             })
 
             // win.webContents.openDevTools();
-            win.maximize(true)
-            win.removeMenu()
+            // win.maximize(true)
+            // win.removeMenu()
 
             if (idx < 2) {
                 win.loadFile(path.join(__dirname, 'inskrd.html'));
@@ -178,11 +178,11 @@
                     printSelectionOnly: false,
                     landscape: false
                 }).then(data => {
-                    fs.writeFile(app.getPath('downloads') + "/" + idx + "_" + examp.namefile + ".pdf", data, function (err) {
+                    fs.writeFile(app.getPath('downloads') + "/" + examp.sheet + "." + idx + "_" + examp.namefile + ".pdf", data, function (err) {
                         if (err) {
-                            console.log(err);
+                            alert(err);
                         } else {
-                            alert('File Tersimpan di Downloads/' + idx + '_' + examp.namefile + ".pdf");
+                            alert('File Tersimpan di Downloads/' + examp.sheet + "." + idx + '_' + examp.namefile + ".pdf");
                         }
                     });
                 }).catch(error => {
@@ -195,7 +195,7 @@
         let myform = document.getElementById('myform')
         myform.addEventListener('submit', function (e) {
             e.preventDefault();
-            console.log(myform.elements['NomorSheet'].value);
+            // console.log(myform.elements['NomorSheet'].value);
             try {
                 readXlsxFile(input.files[0], { sheet: parseInt(myform.elements['NomorSheet'].value) }).then((rows, error) => {
                     let obj = new Object();
@@ -204,7 +204,7 @@
                     obj.data = rows;
                     obj.exp_date = ConvTgl(myform.elements['exp_date'].value);
                     obj.created_at = ConvTgl(myform.elements['created_at'].value);
-                    // obj.address_pt = myform.elements['address_pt'].value;
+                    obj.sheet = parseInt(myform.elements['NomorSheet'].value);
 
                     rows.forEach((e, i) => {
                         if (e[0] && !Number.isInteger(e[0])) {
@@ -219,7 +219,7 @@
                             obj.nomorpajak = e[0];
                         }
                     });
-                    console.log(obj);
+                    // console.log(obj);
                     mywind(obj, 1);
                     mywind(obj, 2);
                 });

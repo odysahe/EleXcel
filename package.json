@@ -1,6 +1,6 @@
 {
   "name": "elexcel",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "for import excel",
   "main": "src/index.js",
   "scripts": {
